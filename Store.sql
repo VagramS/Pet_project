@@ -1,4 +1,4 @@
-DROP TABLE IF EXISTS OrderDetails, Item, Categories, Orders, Customers;
+--DROP TABLE IF EXISTS OrderDetails, Item, Categories, Orders, Customers;
 
 Create table Categories(
 	CategoryId int not null,
@@ -44,11 +44,11 @@ Create table Orders(
 Create table OrderDetails(
 	OrderDetailId int not null,
 	OrderId int not null,
-	ProductId int not null,
+	ItemId int not null,
 	Quantity int not null,
 	Price double precision not null,
 	FOREIGN KEY(OrderId) REFERENCES Orders(OrderId),
-	FOREIGN KEY(ProductId) REFERENCES Item(ItemId),
+	FOREIGN KEY(ItemId) REFERENCES Item(ItemId) ON DELETE CASCADE,
 	PRIMARY KEY(OrderDetailId)
 );
 
@@ -130,7 +130,7 @@ INSERT INTO Orders (OrderId, CustomerId, OrderDate, Status, TotalPrice) VALUES
 (14, 2, '2023-09-27', 'Pending', 750),
 (15, 1, '2023-09-29', 'Shipped', 550);
 
-INSERT INTO OrderDetails (OrderDetailId, OrderId, ProductId, Quantity, Price) VALUES
+INSERT INTO OrderDetails (OrderDetailId, OrderId, ItemId, Quantity, Price) VALUES
 (1, 1, 1, 2, 1200.00),
 (2, 2, 2, 1, 850.00),
 (3, 3, 3, 1, 300.00),
@@ -146,5 +146,3 @@ INSERT INTO OrderDetails (OrderDetailId, OrderId, ProductId, Quantity, Price) VA
 (13, 13, 13, 1, 980.00),
 (14, 14, 14, 1, 750.00),
 (15, 15, 15, 2, 550.00);
-
-Create INDEX ix_item_id on Item(ItemId)

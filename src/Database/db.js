@@ -15,32 +15,40 @@ client.connect(function(err) {
         console.log("Connected");
 });
 
+// Get all items from the Item table
 const getAllItems = async () => {
     const result = await client.query('SELECT * FROM Item');
     return result.rows;
 };
 
+// Get an item from the Item table
 const getItem = async (id) => {
-    const result = await client.query('SELECT * FROM Item WHERE itemid = $1', [id]);
+    const result = await client.query('SELECT * FROM Item WHERE ItemId = $1', [id]);
     return result.rows[0];
 };
 
-// to check
-const CreateItem = async (id, name, price, description, quantity, categoryid, producer, url, discounted) => {
-    const result = await client.query('INSERT INTO Item (ItemId, Name, Price, Description, StockQuantity, CategoryId, Producer, URL, Discounted) VALUES (id, name, price, description, quantity, categoryid, producer, url, discounted)');
-    return result.rows;
+// Create a new item in the Item table
+const CreateItem = async (item) => {
+    const query = 'INSERT INTO Item (ItemId, Name, Price, Description, StockQuantity, CategoryId, Producer, URL, Discounted) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING *';
+    const values = [item.ItemId, item.Name, item.Price, item.Description, item.StockQuantity, item.CategoryId, item.Producer, item.URL, item.Discounted];
+    const result = await client.query(query, values);
+    return result.rows[0];
 };
 
-// To finish
-const UpdateItem = async () => {
-    const result = await client.query('SELECT * FROM item');
-    return result.rows;
+// Updates an item from Item table
+const UpdateItem = async (item) => {
+    const query = 'UPDATE Item SET Name = $2, Price = $3, Description = $4, StockQuantity = $5, CategoryId = $6, Producer = $7, URL = $8, Discounted = $9 WHERE Itemid = $1 RETURNING *';
+    const values = [item.ItemId, item.Name, item.Price, item.Description, item.StockQuantity, item.CategoryId, item.Producer, item.URL, item.Discounted];
+    const result = await client.query(query, values);
+    return result.rows[0];
 };
 
-// To finish
-const DeleteItem = async () => {
-    const result = await client.query('SELECT * FROM item');
-    return result.rows;
+// Delete item from Item table and if the item is in the OrderDetails, delete it from the OrderDetails
+const DeleteItem = async (id) => {
+    const query = ('DELETE FROM Item WHERE ItemId = $1');
+    const values = [id];
+    result = await client.query(query, values);
+    return result.rowCount;
 };
   
 module.exports = {
