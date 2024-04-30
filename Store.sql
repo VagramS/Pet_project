@@ -37,7 +37,7 @@ Create table Orders(
 	OrderDate Date not null,
 	Status varchar(50) not null,
 	TotalPrice int not null,
-	FOREIGN KEY(CustomerId) REFERENCES Customers(CustomerId),
+	FOREIGN KEY(CustomerId) REFERENCES Customers(CustomerId) ON DELETE CASCADE,
 	PRIMARY KEY(OrderId)
 );
 
@@ -47,7 +47,7 @@ Create table OrderDetails(
 	ItemId int not null,
 	Quantity int not null,
 	Price double precision not null,
-	FOREIGN KEY(OrderId) REFERENCES Orders(OrderId),
+	FOREIGN KEY(OrderId) REFERENCES Orders(OrderId) ON DELETE CASCADE,
 	FOREIGN KEY(ItemId) REFERENCES Item(ItemId) ON DELETE CASCADE,
 	PRIMARY KEY(OrderDetailId)
 );
