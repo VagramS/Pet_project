@@ -1,6 +1,6 @@
 const express = require('express');
 const v1RouterStore = require('./v1/routes/storeRoutes');
-const db = require("./Database/db");
+const db = require("./Database/Connection");
 
 const app = express();
 const PORT = process.env.PORT || 3000;

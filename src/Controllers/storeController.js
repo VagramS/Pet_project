@@ -1,9 +1,15 @@
 const storeService = require("../Services/storeService");
-const db = require("../Database/db");
+
+// Tables connection
+const item_table = require("../Database/Item_table");
+const categories_table = require('../Database/Categories_table');
+const customers_table = require('../Database/Customers_table');
+const orders_table = require('../Database/Orders_table');
+const orderDetails_table = require('../Database/OrderDetails_table');
 
 const getItems = async (req, res) => {
   try {
-    const items = await db.getAllItems();
+    const items = await item_table.GetAllItems();
     res.send({status: 'OK', data: items});
   } 
   catch (error) {
@@ -14,7 +20,7 @@ const getItems = async (req, res) => {
 const getOneItem = async (req, res) => {
     try {
         const id = req.params.itemId;
-        const item = await db.getItem(id);
+        const item = await item_table.GetItemById(id);
         if (item) {
             res.send({status: 'OK', data: item});
         } else {
@@ -32,7 +38,7 @@ const createNewComputer = async (req, res) => {
     if(!item.ItemId || !item.Name || !item.Price || !item.Description || !item.StockQuantity || !item.CategoryId || !item.Producer || !item.URL || !item.Discounted)
       res.status(400).send({status: 'Error', message: 'Missing required field'});
     else{
-      const newItem = await db.CreateItem(item);
+      const newItem = await item_table.CreateItem(item);
       res.send({status: 'OK', data: newItem});
     }
   } 
@@ -49,7 +55,7 @@ const updateAnItem = async (req, res) => {
       if(item.ItemId === undefined)
         res.status(400).send({status: 'Error', message: 'Item does not exist'});
       else {
-        const updated_item = await db.UpdateItem(item);
+        const updated_item = await item_table.UpdateItem(item);
         res.send({status: 'OK', data: updated_item})
       }
     }
@@ -61,10 +67,10 @@ const updateAnItem = async (req, res) => {
 const deleteOneItem = async (req, res) => {
   try {
     const id = req.params.itemId;
-    const rowCount = await db.DeleteItem(id);
+    const item = await item_table.DeleteItem(id);
     
-    if (rowCount > 0) 
-        res.send({ status: 'OK', message: 'Item deleted' });
+    if (item) 
+        res.send({ status: 'OK', message: 'Item deleted', data: item });
     else 
         res.status(404).send({ status: 'Error', message: 'Item not found' });
   } 
