@@ -1,11 +1,6 @@
 const storeService = require("../Services/storeService");
 
-// Tables connection
 const item_table = require("../Database/Item_table");
-const categories_table = require('../Database/Categories_table');
-const customers_table = require('../Database/Customers_table');
-const orders_table = require('../Database/Orders_table');
-const orderDetails_table = require('../Database/OrderDetails_table');
 
 const getItems = async (req, res) => {
   try {
@@ -32,7 +27,7 @@ const getOneItem = async (req, res) => {
       }
 };
 
-const createNewComputer = async (req, res) => {
+const createComputer = async (req, res) => {
    try {
     const item = req.query;
     if(!item.ItemId || !item.Name || !item.Price || !item.Description || !item.StockQuantity || !item.CategoryId || !item.Producer || !item.URL || !item.Discounted)
@@ -47,7 +42,7 @@ const createNewComputer = async (req, res) => {
   }
 };
 
-const updateAnItem = async (req, res) => {
+const updateItem = async (req, res) => {
     try{
       const item = req.query;
       if(!item.ItemId || !item.Name || !item.Price || !item.Description || !item.StockQuantity || !item.CategoryId || !item.Producer || !item.URL || !item.Discounted)
@@ -64,7 +59,7 @@ const updateAnItem = async (req, res) => {
     }
 };
 
-const deleteOneItem = async (req, res) => {
+const deleteItem = async (req, res) => {
   try {
     const id = req.params.itemId;
     const item = await item_table.DeleteItem(id);
@@ -82,7 +77,7 @@ const deleteOneItem = async (req, res) => {
 module.exports = {
     getItems,
     getOneItem,
-    createNewComputer,
-    updateAnItem,
-    deleteOneItem,
+    createComputer,
+    updateItem,
+    deleteItem,
 };
