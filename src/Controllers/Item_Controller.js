@@ -1,5 +1,3 @@
-const storeService = require("../Services/storeService");
-
 const item_table = require("../Database/Item_table");
 
 const getItems = async (req, res) => {
@@ -16,11 +14,10 @@ const getOneItem = async (req, res) => {
     try {
         const id = req.params.itemId;
         const item = await item_table.GetItemById(id);
-        if (item) {
+        if (item) 
             res.send({status: 'OK', data: item});
-        } else {
+         else 
             res.status(404).send({status: 'Error', message: 'Item not found'});
-        }
       } 
       catch (error) {
         res.status(500).send({status: 'Error', message: error.message});
@@ -45,8 +42,8 @@ const createComputer = async (req, res) => {
 const updateItem = async (req, res) => {
     try{
       const item = req.query;
-      if(!item.ItemId || !item.Name || !item.Price || !item.Description || !item.StockQuantity || !item.CategoryId || !item.Producer || !item.URL || !item.Discounted)
-          res.status(400).send({status: 'Error', message: 'Missing required field'});
+      if(!item.ItemId)
+          res.status(400).send({status: 'Error', message: 'Missing item id field'});
       if(item.ItemId === undefined)
         res.status(400).send({status: 'Error', message: 'Item does not exist'});
       else {

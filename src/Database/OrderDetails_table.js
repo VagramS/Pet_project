@@ -8,7 +8,7 @@ const GetAllOrderDetails = async() => {
 
 // Get an order detail from the OrderDetails table by OrderDetailId
 const GetOrderDetailById = async(id) => {
-    const result = await client.query('SELECT * FROM OrderDetails WHERE OrderDetailId = $1,', [id]);
+    const result = await client.query('SELECT * FROM OrderDetails WHERE OrderDetailId = $1', [id]);
     return result.rows[0];
 };
 
@@ -32,10 +32,10 @@ const UpdateOrderDetails = async(order_details) => {
 
 // Delete order detail from OrderDetails table by OrderDetailId
 const DeleteOrderDetails = async(id) => {
-    const item = await GetOrderDetailById(id);
+    const orderDetail = await GetOrderDetailById(id);
     const query = await client.query('DELETE FROM OrderDetails WHERE OrderDetailId = $1', [id]);
 
-    return item;
+    return orderDetail;
 };
 
 module.exports = {

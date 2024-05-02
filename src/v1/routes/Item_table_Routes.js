@@ -1,7 +1,7 @@
-const express = require("express");
-const storeController = require("../../Controllers/Item_Controller");
-
+const express = require('express');
 const router = express.Router();
+
+const storeController = require("../../Controllers/Item_Controller");
 
 router.get('/', storeController.getItems);
 

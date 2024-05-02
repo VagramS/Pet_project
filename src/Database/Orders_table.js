@@ -32,10 +32,10 @@ const UpdateOrder = async(order) => {
 
 // Delete order from Orders table by OrderId
 const DeleteOrder = async(id) => {
-    const item = await GetItemById(id);
+    const order = await GetOrderById(id);
     const query = await client.query('DELETE FROM Orders WHERE OrderId = $1', [id]);
     
-    return item;
+    return order;
 };
 
 module.exports = {

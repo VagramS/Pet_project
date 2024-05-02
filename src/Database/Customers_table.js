@@ -32,10 +32,10 @@ const UpdateCustomer = async(customer) => {
 
 // Delete customer from Customers table by CustomerId
 const DeleteCustomer = async(id) => {
-    const item = await GetCustomerById(id);
-    const query = await client.query ('DELETE FROM Customer WHERE CustomerId = $1', [id]);
+    const customer = await GetCustomerById(id);
+    const query = await client.query ('DELETE FROM Customers WHERE CustomerId = $1', [id]);
 
-    return item;
+    return customer;
 };
 
 module.exports = {

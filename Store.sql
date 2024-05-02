@@ -13,12 +13,12 @@ Create table Item(
 	Price int not null,
 	Description varchar(255) not null,
 	StockQuantity int not null,
-	CategoryId int not null,
+	CategoryId int,
 	Producer varchar(255) not null,
 	URL varchar(500) not null,
 	Discounted boolean not null,
 	PRIMARY KEY(ItemId),
-	FOREIGN KEY(CategoryId) REFERENCES Categories(CategoryId)
+	FOREIGN KEY(CategoryId) REFERENCES Categories(CategoryId) ON DELETE SET NULL
 );
 
 Create table Customers(

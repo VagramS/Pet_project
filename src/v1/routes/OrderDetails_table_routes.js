@@ -1,16 +1,16 @@
 const express = require('express');
-const orderDetailsController = require('../../Controllers/OrderDetails_Controller');
-
 const router = express.Router();
+
+const orderDetailsController = require('../../Controllers/OrderDetails_Controller');
 
 router.get('/', orderDetailsController.getAllOrderDetails);
 
-router.get('/:orderDetailId', orderDetailsController.getOrderDetails);
+router.get('/:orderDetailsId', orderDetailsController.getOrderDetails);
 
 router.post('/', orderDetailsController.createOrderDetails);
 
 router.patch('/', orderDetailsController.updateOrderDetails);
 
-router.delete('/:orderDetailId', orderDetailsController.deleteOrderDetails);
+router.delete('/:orderDetailsId', orderDetailsController.deleteOrderDetails);
 
 module.exports = router;
