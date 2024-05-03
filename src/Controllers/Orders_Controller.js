@@ -1,4 +1,5 @@
 const order_table = require('../Database/Orders_table');
+const Errors = require('../Utils/Errors/index');
 
 const getAllOrders = async (req, res) => {
     try {
@@ -6,7 +7,7 @@ const getAllOrders = async (req, res) => {
         res.send({status: 'OK', data: orders});
     } 
     catch (error) {
-        res.status(500).send({status: 'Error', message: error.message});
+        throw new Errors.InternalServerError('Error. Please try again later.');
     }
 };
 
@@ -17,10 +18,10 @@ const getOrder = async (req, res) => {
         if (order) 
             res.send({status: 'OK', data: order});
         else 
-            res.status(404).send({status: 'Error', message: 'Item not found'});
+            throw new Errors.NotFoundError('Order not found');
     } 
     catch (error) {
-        res.status(500).send({status: 'Error', message: error.message});
+        throw new Errors.InternalServerError('Error. Please try again later.');
     }
 };
 
@@ -28,14 +29,14 @@ const createOrder = async (req, res) => {
     try {
         const order = req.query;
         if(!order.OrderId || !order.CustomerId || !order.OrderDate || !order.Status || !order.TotalPrice)
-          res.status(400).send({status: 'Error', message: 'Missing required field'});
+          throw new Errors.BadRequestError('Missing required fields');
         else {
           const new_order = await order_table.CreateOrder(order);
           res.send({status: 'OK', data: new_order});
         }
     } 
     catch (error) {
-        res.status(500).send({status: 'Error', message: error.message});
+        throw new Errors.InternalServerError('Error. Please try again later.');
     }
 };
 
@@ -43,16 +44,16 @@ const updateOrder = async (req, res) => {
     try{
         const order = req.query;
         if(!order.OrderId)
-            res.status(400).send({status: 'Error', message: 'Missing order id field'});
+            throw new Errors.BadRequestError('Missing OrderId field');
         if(order.OrderId === undefined)
-          res.status(400).send({status: 'Error', message: 'Order does not exist'});
+          throw new Errors.NotFoundError('Order not found');
         else {
           const updated_order = await order_table.UpdateOrder(order);
           res.send({status: 'OK', data: updated_order})
         }
       }
       catch(error) {
-        res.status(500).send({status: 'Error', message: error.message});
+        throw new Errors.InternalServerError('Error. Please try again later.');
       }
 };
 
@@ -62,12 +63,12 @@ const deleteOrder = async (req, res) => {
         const deleted_order = await order_table.DeleteOrder(id);
         
         if (deleted_order) 
-            res.send({ status: 'OK', message: 'Item deleted', data: deleted_order });
+            res.send({ status: 'OK', message: 'Order deleted', data: deleted_order });
         else 
-            res.status(404).send({ status: 'Error', message: 'Order not found' });
+            throw new Errors.NotFoundError('Order not found');
       } 
       catch (error) {
-          res.status(500).send({ status: 'Error', message: error.message });
+        throw new Errors.InternalServerError('Error. Please try again later.');
       }
 };
 

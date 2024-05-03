@@ -1,4 +1,5 @@
 const category_table = require('../Database/Categories_table');
+const Errors = require('../Utils/Errors/index');
 
 const getAllCategories = async (req, res) => {
     try{
@@ -6,21 +7,21 @@ const getAllCategories = async (req, res) => {
         res.send({status: 'OK', data: categories});
     }
     catch(error) {
-        res.status(500).send({status: 'Error', message: error.message});
+        throw new Errors.InternalServerError('Error. Please try again later.');
     }
 };
 
-const getOneCategory = async (req, res) => { // to fix
+const getOneCategory = async (req, res) => {
     try{
         const id = req.params.categoryId;
         const category = await category_table.GetCategoryById(id);
         if(category)
             res.send({status: 'OK', data: category});
         else
-            res.status(400).send({status: 'Error', message: 'Category not found'});
+            throw new Errors.NotFoundError('Category not found');
     }
     catch(error){
-        res.status(500).send({status: 'Error', message: error.message});
+        throw new Errors.InternalServerError('Error. Please try again later.');
     }
 };
 
@@ -28,14 +29,14 @@ const createNewCategory = async (req, res) => {
     try{
         const category = req.query;
         if(!category.CategoryId || !category.Name || !category.CategoryDesc)
-            res.status(400).send({status: 'Error', message: 'Missing required field'});
+            throw new Errors.BadRequestError('Missing required fields');
         else{
             const new_category = await category_table.CreateCategory(category);
             res.send({status: 'OK', data: new_category});
         }       
     }
     catch(error){
-        res.status(500).send({status: 'Error', message: error.message});
+        throw new Errors.InternalServerError('Error. Please try again later.');
     }
 };
 
@@ -43,9 +44,9 @@ const updateCategory = async (req, res) => {
     try{
         const category = req.query;
         if(!category.CategoryId)
-            res.status(400).send({status: 'Error', message: 'Missing category id field'});
+            throw new Errors.BadRequestError('Missing category id field');
         else if(category.CategoryId == undefined)
-            res.status(400).send({status: 'Error', message: 'Category not found'});
+            throw new Errors.NotFoundError('Category not found');
         else
         {
             const updated_category = await category_table.UpdateCategory(category);
@@ -53,7 +54,7 @@ const updateCategory = async (req, res) => {
         }
     }
     catch(error){
-        res.status(500).send({status: 'Error', message: error.message});
+        throw new Errors.InternalServerError('Error. Please try again later.');
     }
 };
 
@@ -65,10 +66,10 @@ const deleteCategory = async (req, res) => {
         if(deleted_item)
             res.send({status: 'OK', data: deleted_item});
         else
-            res.status(400).send({status: 'Error', message: 'Category not found'})
+            throw new Errors.NotFoundError('Category not found');
     }
     catch(error){
-        res.status(500).send({status: 'Error', message: error.message});
+        throw new Errors.InternalServerError('Error. Please try again later.');
     }
 };
 

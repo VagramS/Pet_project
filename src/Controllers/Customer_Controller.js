@@ -1,4 +1,5 @@
 const customer_table = require('../Database/Customers_table');
+const Errors = require('../Utils/Errors/index');
 
 const getAllCustomers = async (req, res) => {
     try{
@@ -6,7 +7,7 @@ const getAllCustomers = async (req, res) => {
         res.send({status: 'OK', data: customers});
     }
     catch(error){
-        res.status(500).send({status: 'Error', message: error.message});
+        throw new Errors.InternalServerError('Error. Please try again later.');
     }
 };
 
@@ -17,10 +18,10 @@ const getOneCustomer = async (req, res) => {
         if(customer)
             res.send({status: 'OK', data: customer});
         else
-            res.status(400).send({status: 'Error', message: 'Customer not found'})
+            throw new Errors.NotFoundError('Customer not found');
     }
     catch(error){
-        res.status(500).send({status: 'Error', message: error.message});
+        throw new Errors.InternalServerError('Error. Please try again later.');
     }
 };
 
@@ -28,14 +29,14 @@ const createNewCustomer = async (req, res) => {
     try{
         const customer = req.query;
         if(!customer.CustomerId || !customer.Name || !customer.LastName || !customer.Adress || !customer.Phone || !customer.Email)
-            res.status(400).send({status: 'Error', message: 'Missing required field'})
+            throw new Errors.BadRequestError('Missing required fields');
         else {
             const new_customer = await customer_table.AddCustomer(customer);
             res.send({status: 'OK', data: new_customer});
         }  
     }
     catch(error){
-        res.status(500).send({status: 'Error', message: error.message});
+        throw new Errors.InternalServerError('Error. Please try again later.');
     }
 };
 
@@ -43,16 +44,16 @@ const updateCustomer = async (req, res) => {
     try{
         const customer = req.query;
         if(!customer.CustomerId)
-            res.status(400).send({status: 'Error', message: 'Missing customer id field'})
+            throw new Errors.BadRequestError('Missing CustomerId field');
         else if(customer.CustomerId == undefined)
-            res.status(400).send({status: 'Error', message: 'Customer not found'})
+            throw new Errors.NotFoundError('Customer not found');
         else {
             const updated_customer = await customer_table.UpdateCustomer(customer);
             res.send({status: 'OK', data: updated_customer});
         }
     }
     catch(error){
-        res.status(500).send({status: 'Error', message: error.message});
+        throw new Errors.InternalServerError('Error. Please try again later.');
     }
 };
 
@@ -64,10 +65,10 @@ const deleteCustomer = async (req, res) => {
         if(deleted_customer)
             res.send({status: 'OK', data: deleted_customer});
         else
-            res.status(400).send({status: 'OK', message: 'Customer not found'})
+            throw new Errors.NotFoundError('Customer not found');
     }
-    catch(error){
-        res.status(500).send({status: 'Error', message: error.message});
+    catch(error) {
+        throw new Errors.InternalServerError('Error. Please try again later.');
     }
 };
 

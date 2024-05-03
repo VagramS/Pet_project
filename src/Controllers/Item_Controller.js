@@ -1,4 +1,5 @@
 const item_table = require("../Database/Item_table");
+const Errors = require('../Utils/Errors/index');
 
 const getItems = async (req, res) => {
   try {
@@ -6,7 +7,7 @@ const getItems = async (req, res) => {
     res.send({status: 'OK', data: items});
   } 
   catch (error) {
-    res.status(500).send({status: 'Error', message: error.message});
+    throw new Errors.InternalServerError('Error. Please try again later.');
   }
 };
 
@@ -17,10 +18,10 @@ const getOneItem = async (req, res) => {
         if (item) 
             res.send({status: 'OK', data: item});
          else 
-            res.status(404).send({status: 'Error', message: 'Item not found'});
-      } 
+            throw new Errors.NotFoundError('Item not found');
+        } 
       catch (error) {
-        res.status(500).send({status: 'Error', message: error.message});
+        throw new Errors.InternalServerError('Error. Please try again later.');
       }
 };
 
@@ -28,14 +29,14 @@ const createComputer = async (req, res) => {
    try {
     const item = req.query;
     if(!item.ItemId || !item.Name || !item.Price || !item.Description || !item.StockQuantity || !item.CategoryId || !item.Producer || !item.URL || !item.Discounted)
-      res.status(400).send({status: 'Error', message: 'Missing required field'});
-    else{
+      throw new Errors.BadRequestError('Missing required fields');
+    else {
       const newItem = await item_table.CreateItem(item);
       res.send({status: 'OK', data: newItem});
     }
   } 
   catch (error) {
-    res.status(500).send({status: 'Error', message: error.message});
+    throw new Errors.InternalServerError('Error. Please try again later.');
   }
 };
 
@@ -43,16 +44,16 @@ const updateItem = async (req, res) => {
     try{
       const item = req.query;
       if(!item.ItemId)
-          res.status(400).send({status: 'Error', message: 'Missing item id field'});
+        throw new Errors.BadRequestError('Missing ItemId field');
       if(item.ItemId === undefined)
-        res.status(400).send({status: 'Error', message: 'Item does not exist'});
+        throw new Errors.NotFoundError('Item not found');
       else {
         const updated_item = await item_table.UpdateItem(item);
         res.send({status: 'OK', data: updated_item})
       }
     }
     catch(error) {
-      res.status(500).send({status: 'Error', message: error.message});
+      throw new Errors.InternalServerError('Error. Please try again later.');
     }
 };
 
@@ -64,10 +65,10 @@ const deleteItem = async (req, res) => {
     if (item) 
         res.send({ status: 'OK', message: 'Item deleted', data: item });
     else 
-        res.status(404).send({ status: 'Error', message: 'Item not found' });
+       throw new Errors.NotFoundError('Item not found');
   } 
   catch (error) {
-      res.status(500).send({ status: 'Error', message: error.message });
+    throw new Errors.InternalServerError('Error. Please try again later.');
   }
 };
 

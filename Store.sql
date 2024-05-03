@@ -1,4 +1,4 @@
---DROP TABLE IF EXISTS OrderDetails, Item, Categories, Orders, Customers;
+-- DROP TABLE IF EXISTS OrderDetails, Item, Categories, Orders, Customers;
 
 Create table Categories(
 	CategoryId int not null,
